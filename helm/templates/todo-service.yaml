@@ -1,0 +1,19 @@
+{{- $root := . }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo.fullname" $root }}-app
+  labels:
+    app: {{ include "todo.fullname" $root }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.network.service.port }}
+    targetPort: {{ .Values.network.service.port }}
+    nodePort: {{ .Values.network.service.nodeport }}
+  selector:
+    app: {{ include "todo.fullname" $root }}

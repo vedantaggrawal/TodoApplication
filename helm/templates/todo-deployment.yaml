@@ -1,0 +1,33 @@
+{{- $root := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo.fullname" $root }}-app
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "todo.fullname" $root }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "todo.fullname" $root }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      annotations:
+        checksum/config: {{ include (print $root.Template.BasePath "/todo-configmap.yaml" ) . | sha256sum }}
+    spec:
+      serviceAccountName: {{ include "todo.fullname" $root }}
+      volumes:
+        - name: todo-config
+          configMap:
+            name: {{ include "todo.fullname" $root }}-configmap
+      containers:
+        - name: {{ include "todo.fullname" $root }}-app
+          image: {{ (print .Values.images.repository .Values.images.tags) }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          volumeMounts:
+            - name: todo-config
+              mountPath: /etc/todo/conf

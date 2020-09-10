@@ -1,0 +1,20 @@
+network:
+    service:
+        port: 8000
+        nodeport: 31000
+replicaCount: 2
+images:
+    repository: ''
+    tags: todoapplication:v1.0
+    pullPolicy: IfNotPresent
+conf:
+    todo:
+        database:
+            DATABASE_USER: postgres
+            DATABASE_PASSWORD: mysecretpassword
+            DATABASE_HOST: 192.168.1.13
+            DATABASE_PORT: 5432
+            DATABASE_NAME: tododb
+        debug:
+            DEBUG: false
+            

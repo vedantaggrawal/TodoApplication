@@ -1,0 +1,15 @@
+{{- $root := . }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "todo.fullname" $root }}-configmap
+data:
+  todo.conf: |
+{{- range $section, $values := .Values.conf.todo }}
+{{- if kindIs "map" $values }}
+    [{{ $section }}]
+{{- range $key, $value := $values }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,39 @@
+---
+{{- $root := . }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "todo.fullname" $root }}-list-resources
+rules:
+  - apiGroups:
+      - ""
+      - extensions
+      - batch
+      - apps
+    verbs:
+      - get
+      - list
+    resources:
+      - services
+      - endpoints
+      - jobs
+      - pods
+      - daemonsets
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: {{ include "todo.fullname" $root }}-list-resources
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "todo.fullname" $root }}-list-resources
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "todo.fullname" $root }}
+    namespace: {{ .Release.Namespace }}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: {{ include "todo.fullname" $root }}
