@@ -1,0 +1,12 @@
+network:
+    service:
+        port: 5432
+        nodeport: 32000
+replicaCount: 1
+images:
+    repository: 
+    tags: postgres:latest
+    pullPolicy: IfNotPresent
+secrets:
+    password: mysecretpassword
+            
